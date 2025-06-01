@@ -1,7 +1,34 @@
-[gd_scene format=3 uid="uid://d34sl34gbjojt"]
+[gd_scene load_steps=6 format=3 uid="uid://d34sl34gbjojt"]
+
+[ext_resource type="Texture2D" uid="uid://dfuofh4nwer0n" path="res://Assets/bird1.png" id="1_2n4h3"]
+[ext_resource type="Texture2D" uid="uid://533ubvnyvpxe" path="res://Assets/bird2.png" id="2_uld4q"]
+[ext_resource type="Texture2D" uid="uid://cb3fw6j2c364v" path="res://Assets/bird3.png" id="3_hwjj6"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_sp4su"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("1_2n4h3")
+}, {
+"duration": 1.0,
+"texture": ExtResource("2_uld4q")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_hwjj6")
+}],
+"loop": true,
+"name": &"flying",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_6sh3y"]
+radius = 18.0
 
 [node name="Bird" type="CharacterBody2D"]
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_sp4su")
+animation = &"flying"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_6sh3y")
