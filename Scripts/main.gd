@@ -1,5 +1,7 @@
 extends Node
 
+@export var pipe_scene : PackedScene
+
 var game_running : bool
 var game_over : bool
 var scroll
@@ -24,6 +26,12 @@ func new_game():
 	game_over = false
 	score = 0
 	scroll = 0
+	$ScoreLabel.text = "SCORE: " + str(score)
+	$GameOver.hide()
+	get_tree().call_group("pipes", "queue_free")
+	pipes.clear()
+	# generate starting pipes
+	generate_pipes()
 	$Bird.reset()
 	
 func _input(event):
@@ -35,11 +43,14 @@ func _input(event):
 				else:
 					if $Bird.flying:
 						$Bird.flap()
+						check_top()
 						
 func start_game():
 	game_running = true
 	$Bird.flying = true
 	$Bird.flap()
+	#start pipe timer
+	$PipeTimer.start()
 
 func _process(delta: float) -> void:
 	if game_running:
@@ -49,3 +60,47 @@ func _process(delta: float) -> void:
 			scroll = 0
 		#move ground node
 		$Ground.position.x = -scroll
+		#move pipes
+		for pipe in pipes:
+			pipe.position.x -= SCROLL_SPEED
+
+
+func _on_pipe_timer_timeout() -> void:
+	generate_pipes()
+	
+func generate_pipes():
+	var pipe = pipe_scene.instantiate()
+	pipe.position.x = screen_size.x + PIPE_DELAY
+	pipe.position.y = (screen_size.y - ground_height) / 2 + randi_range(-PIPE_RANGE, PIPE_RANGE)
+	pipe.hit.connect(bird_hit)
+	pipe.scored.connect(scored)
+	add_child(pipe)
+	pipes.append(pipe)
+
+func scored():
+	score += 1
+	$ScoreLabel.text = "SCORE: " + str(score)
+
+func check_top():
+	if $Bird.position.y < 0:
+		$Bird.falling = true
+		stop_game()
+
+func stop_game():
+	$PipeTimer.stop()
+	$GameOver.show()
+	$Bird.flying = false
+	game_running = false
+	game_over = true
+
+func bird_hit():
+	$Bird.falling = true
+	stop_game()
+
+
+func _on_ground_hit() -> void:
+	$Bird.falling = false
+	stop_game()
+
+func _on_game_over_restart() -> void:
+	new_game()
