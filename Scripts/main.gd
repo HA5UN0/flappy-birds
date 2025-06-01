@@ -14,6 +14,7 @@ const PIPE_DELAY : int = 100
 const PIPE_RANGE : int = 200
 
 func _ready() -> void:
+	screen_size = get_window().size
 	new_game()
 	
 	
@@ -39,3 +40,12 @@ func start_game():
 	game_running = true
 	$Bird.flying = true
 	$Bird.flap()
+
+func _process(delta: float) -> void:
+	if game_running:
+		scroll += SCROLL_SPEED
+		#reset scroll
+		if scroll >= screen_size.x:
+			scroll = 0
+		#move ground node
+		$Ground.position.x = -scroll
