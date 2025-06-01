@@ -11,8 +11,14 @@ config_version=5
 [application]
 
 config/name="flappy-birds"
+run/main_scene="res://Scenes/main.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[display]
+
+window/size/viewport_width=864
+window/size/viewport_height=936
 
 [rendering]
 
